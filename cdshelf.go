@@ -48,6 +48,7 @@ Arguments:
 		Album title. Enclose between "" if not a single word
 `
 
+// Init command line arguments
 func flagsInit() {
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, usageMessage)
@@ -71,6 +72,7 @@ func flagsInit() {
 	}
 }
 
+// Helper function for errors
 func check(e error) {
 	if e != nil {
 		panic(e)
@@ -114,7 +116,7 @@ func getAuthorization(c Configuration) *lastfm.Api {
 	return api
 }
 
-// Print data received from Last.fm about an album
+// Print data received from Last.fm about an album. For debugging/helping
 func printInfo(info lastfm.AlbumGetInfo) {
 	// Some calls:
 	// Album name info.Name
@@ -162,6 +164,7 @@ func downloadCover(url, name string) {
 	}
 }
 
+// Write info from Last.fm to a markdown file
 func writeMarkdown(name, title, summary, content string, tags map[string]string) {
 	// create file for the album. Replace all whitespaces with _
 	entry, err := os.Create("content/album/" + strings.Replace(name, " ", "_", -1) + "-" + strings.Replace(title, " ", "_", -1) + ".md")
