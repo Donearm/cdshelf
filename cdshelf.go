@@ -48,7 +48,7 @@ Arguments:
 		Album title. Enclose between "" if not a single word
 `
 
-// Init command line arguments
+// flagsInit initializes command line arguments
 func flagsInit() {
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, usageMessage)
@@ -72,14 +72,14 @@ func flagsInit() {
 	}
 }
 
-// Helper function for errors
+// check is an helper function for handling errors
 func check(e error) {
 	if e != nil {
 		panic(e)
 	}
 }
 
-// Load configuration file (in JSON)
+// loadConfig loads the configuration file (in JSON)
 func loadConfig() Configuration {
 	file, err := os.Open("config.json")
 	if err != nil {
@@ -97,7 +97,7 @@ func loadConfig() Configuration {
 	return config
 }
 
-// Authorize on Last.fm
+// getAuthorization authorizes the software on Last.fm
 func getAuthorization(c Configuration) *lastfm.Api {
 	if c.APIKey == "" || c.APISecret == "" {
 		panic("You need an API Key and Secret in config.json. Please provide both, exiting...")
@@ -117,6 +117,8 @@ func getAuthorization(c Configuration) *lastfm.Api {
 }
 
 // Print data received from Last.fm about an album. For debugging/helping
+// printInfo is a debugging function that prints parts of the data received from 
+// Last.fm about a specific album
 func printInfo(info lastfm.AlbumGetInfo) {
 	// Some calls:
 	// Album name info.Name
@@ -134,7 +136,8 @@ func printInfo(info lastfm.AlbumGetInfo) {
 	fmt.Println(info.Wiki.Content)
 }
 
-// Collect in a map tags for a specific album as they are on Last.fm
+// collectTags collects in a map the tags for a specific album as they are 
+// received from Last.fm
 func collectTags(tags lastfm.AlbumGetTopTags) map[string]string {
 	m := make(map[string]string, 5)
 	for i := 0; i <= 4; i++ {
@@ -146,7 +149,7 @@ func collectTags(tags lastfm.AlbumGetTopTags) map[string]string {
 	return m
 }
 
-// Get album cover and save it locally
+// downloadCover gets the album cover from Last.fm and saves it locally
 func downloadCover(url, name string) {
 	out, err := os.Create("static/images/" + name + ".png")
 	defer out.Close()
@@ -164,7 +167,7 @@ func downloadCover(url, name string) {
 	}
 }
 
-// Write info from Last.fm to a markdown file
+// writeMarkdown writes info received from Last.fm to a markdown file
 func writeMarkdown(name, title, summary, content string, tags map[string]string) {
 	// create file for the album. Replace all whitespaces with _
 	entry, err := os.Create("content/album/" + strings.Replace(name, " ", "_", -1) + "-" + strings.Replace(title, " ", "_", -1) + ".md")
