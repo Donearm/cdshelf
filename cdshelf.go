@@ -35,7 +35,7 @@ type Configuration struct {
 var artistArg string // artist name query
 var albumArg string  // album name query
 
-var usageMessage string = `
+var usageMessage = `
 cdshelf.go -a "<artist>" -l "<album>"
 
 cdshelf.go look up for <artist> and <album> on Last.fm and return informations on the album
@@ -55,14 +55,14 @@ func flagsInit() {
 	}
 
 	const (
-		def_artist = ""
-		def_album  = ""
+		defArtist = ""
+		defAlbum  = ""
 	)
 
-	flag.StringVar(&artistArg, "artist", def_artist, "")
-	flag.StringVar(&artistArg, "a", def_artist, "")
-	flag.StringVar(&albumArg, "album", def_album, "")
-	flag.StringVar(&albumArg, "l", def_album, "")
+	flag.StringVar(&artistArg, "artist", defArtist, "")
+	flag.StringVar(&artistArg, "a", defArtist, "")
+	flag.StringVar(&albumArg, "album", defAlbum, "")
+	flag.StringVar(&albumArg, "l", defAlbum, "")
 
 	flag.Parse()
 
@@ -89,8 +89,8 @@ func loadConfig() Configuration {
 	// make a new decoder and Configuration struct to host the config data
 	decoder := json.NewDecoder(file)
 	config := Configuration{}
-	decode_err := decoder.Decode(&config)
-	if decode_err != nil {
+	decodeErr := decoder.Decode(&config)
+	if decodeErr != nil {
 		fmt.Println("Couldn't parse config.json")
 		panic(err)
 	}
@@ -105,9 +105,9 @@ func getAuthorization(c Configuration) *lastfm.Api {
 	api := lastfm.New(c.APIKey, c.APISecret)
 	token, err := api.GetToken()
 	if err != nil {
-		authUrl := api.GetAuthTokenUrl(token)
+		authURL := api.GetAuthTokenUrl(token)
 		reader := bufio.NewReader(os.Stdin)
-		fmt.Print("Authorize the cdshelf app at ", authUrl)
+		fmt.Print("Authorize the cdshelf app at ", authURL)
 		text, _ := reader.ReadString('\n')
 		fmt.Println(text)
 	}
@@ -187,7 +187,7 @@ func writeMarkdown(name, title, summary, content string, tags map[string]string)
 	check(e2)
 	_, e3 := entry.WriteString("tags = " + "[\n")
 	check(e3)
-	for k, _ := range tags {
+	for k := range tags {
 		_, e := entry.WriteString("\t\"" + k + "\",\n")
 		check(e)
 	}
