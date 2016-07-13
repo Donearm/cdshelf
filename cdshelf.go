@@ -177,6 +177,12 @@ func downloadCover(url, name string) {
 	}
 }
 
+// save an AlbumPage content to a local file
+func (a *AlbumPage) save() error {
+	filename := a.Name + ".txt"
+	return ioutil.WriteFile(filename, a.Content, 0600)
+}
+
 // writeMarkdown writes info received from Last.fm to a markdown file
 func writeMarkdown(name, title, summary, content string, tags map[string]string) {
 	// create file for the album. Replace all whitespaces with _
