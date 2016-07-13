@@ -183,6 +183,17 @@ func (a *AlbumPage) save() error {
 	return ioutil.WriteFile(filename, a.Content, 0600)
 }
 
+// load an album from local file to an AlbumPage struct
+func (a *AlbumPage) load() (*AlbumPage, error) {
+	filename := a.Name + ".txt"
+	body, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	return &AlbumPage{Title: a.Title, Content: body}, nil
+}
+
 // writeMarkdown writes info received from Last.fm to a markdown file
 func writeMarkdown(name, title, summary, content string, tags map[string]string) {
 	// create file for the album. Replace all whitespaces with _
