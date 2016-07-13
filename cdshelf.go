@@ -32,6 +32,16 @@ type Configuration struct {
 	AppName    string
 }
 
+// AlbumPage struct represents the data that will appear on each album's page
+type AlbumPage struct {
+	Title	string
+	Name	string
+	Date	time.Time
+	Cover	string
+	Tags	[]string
+	Content string
+}
+
 var artistArg string // artist name query
 var albumArg string  // album name query
 
