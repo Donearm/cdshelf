@@ -17,9 +17,9 @@ import (
 	"fmt"
 	"github.com/shkh/lastfm-go/lastfm"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
-	"strings"
 	"time"
 )
 
@@ -36,7 +36,7 @@ type Configuration struct {
 type AlbumPage struct {
 	Title	string
 	Name	string
-	Date	time.Time
+	Date	string
 	Cover	string
 	Tags	map[string]string
 	Content string
@@ -180,7 +180,7 @@ func downloadCover(url, name string) {
 // save an AlbumPage content to a local file
 func (a *AlbumPage) save() error {
 	filename := a.Name + ".txt"
-	return ioutil.WriteFile(filename, a.Content, 0600)
+	return ioutil.WriteFile(filename, []byte(a.Content), 0600)
 }
 
 // load an album infoes received from Last.fm to an AlbumPage struct
@@ -196,6 +196,7 @@ func main() {
 	flagsInit()
 
 	var tagMap map[string]string
+	var album AlbumPage
 
 	c := loadConfig()
 
@@ -223,4 +224,7 @@ func main() {
 	}
 
 	downloadCover(info.Images[3].Url, info.Artist+"-"+info.Name)
+
+	page := album.load(info, tagMap)
+	fmt.Println(page)
 }
