@@ -178,8 +178,7 @@ func downloadCover(url, name string) {
 }
 
 // save an AlbumPage content to a local file
-func (a *AlbumPage) save() error {
-	filename := a.Name + ".txt"
+func (a *AlbumPage) save(filename string) error {
 	return ioutil.WriteFile(filename, []byte(a.Content), 0600)
 }
 
