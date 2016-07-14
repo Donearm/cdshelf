@@ -39,7 +39,7 @@ type AlbumPage struct {
 	Date	time.Time
 	Cover	string
 	Tags	map[string]string
-	Content []byte
+	Content string
 }
 
 var artistArg string // artist name query
