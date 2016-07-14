@@ -194,48 +194,6 @@ func (a *AlbumPage) load() (*AlbumPage, error) {
 	return &AlbumPage{Title: a.Title, Content: body}, nil
 }
 
-// writeMarkdown writes info received from Last.fm to a markdown file
-func writeMarkdown(name, title, summary, content string, tags map[string]string) {
-	// create file for the album. Replace all whitespaces with _
-	entry, err := os.Create("content/album/" + strings.Replace(name, " ", "_", -1) + "-" + strings.Replace(title, " ", "_", -1) + ".md")
-	defer entry.Close()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	// Generate time string
-	t := time.Now()
-
-	// Start progressively writing the toml header
-	_, e1 := entry.WriteString("+++\ndate = \"" + t.Format("2006-01-02T15:04:05Z") + "\"\n")
-	check(e1)
-	_, e2 := entry.WriteString("name = \"" + name + " - " + title + "\"\n")
-	check(e2)
-	_, e3 := entry.WriteString("tags = " + "[\n")
-	check(e3)
-	for k := range tags {
-		_, e := entry.WriteString("\t\"" + k + "\",\n")
-		check(e)
-	}
-	_, e4 := entry.WriteString("]\n")
-	check(e4)
-	_, e5 := entry.WriteString("title = \"" + title + "\"\n")
-	check(e5)
-	_, e6 := entry.WriteString("image = \"" + name + "-" + title + ".png\"\n")
-	check(e6)
-	_, e7 := entry.WriteString("\n+++\n")
-	check(e7)
-	if content != "" {
-		_, e8 := entry.WriteString(content)
-		check(e8)
-	} else {
-		_, e8 := entry.WriteString(summary)
-		check(e8)
-	}
-	entry.Sync()
-}
-
 func main() {
 	flagsInit()
 
@@ -267,6 +225,4 @@ func main() {
 	}
 
 	downloadCover(info.Images[3].Url, info.Artist+"-"+info.Name)
-
-	writeMarkdown(info.Artist, info.Name, info.Wiki.Summary, info.Wiki.Content, tagMap)
 }
