@@ -38,7 +38,7 @@ type AlbumPage struct {
 	Name	string
 	Date	time.Time
 	Cover	string
-	Tags	[]string
+	Tags	map[string]string
 	Content []byte
 }
 
