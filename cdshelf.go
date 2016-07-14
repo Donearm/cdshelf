@@ -183,15 +183,13 @@ func (a *AlbumPage) save() error {
 	return ioutil.WriteFile(filename, a.Content, 0600)
 }
 
-// load an album from local file to an AlbumPage struct
-func (a *AlbumPage) load() (*AlbumPage, error) {
-	filename := a.Name + ".txt"
-	body, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
+// load an album infoes received from Last.fm to an AlbumPage struct
+func (a *AlbumPage) load(info lastfm.AlbumGetInfo, tags map[string]string) *AlbumPage {
+	// initialize time
+	t := time.Now()
 
-	return &AlbumPage{Title: a.Title, Content: body}, nil
+	return &AlbumPage{Title: info.Name, Date: t.Format("2006-01-02T15:04:05Z"),
+	Cover: info.Images[3].Url, Tags: tags, Content: info.Wiki.Content }
 }
 
 func main() {
