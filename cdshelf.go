@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"github.com/Donearm/cdshelf/server"
 )
 
 // Configuration struct represents the data we need for authenticating on
