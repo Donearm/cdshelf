@@ -21,7 +21,6 @@ import (
 	"net/http"
 	"os"
 	"time"
-	"github.com/Donearm/cdshelf/server"
 )
 
 // Configuration struct represents the data we need for authenticating on
@@ -41,6 +40,12 @@ type AlbumPage struct {
 	Cover	string
 	Tags	map[string]string
 	Content string
+}
+
+// AlbumFile struct represents data about an album as obtained from a local file
+type AlbumFile struct {
+	Title	string
+	Body	[]byte
 }
 
 var artistArg string // artist name query
@@ -192,6 +197,29 @@ func (a *AlbumPage) load(info lastfm.AlbumGetInfo, tags map[string]string) *Albu
 	Cover: info.Images[3].Url, Tags: tags, Content: info.Wiki.Content }
 }
 
+// load an album infoes from a file
+func LoadAlbum(title string) (*AlbumFile, error) {
+	body, err := ioutil.ReadFile(title)
+	if err != nil {
+		return nil, err
+	}
+
+	return &AlbumFile{Title: title, Body: body}, nil
+}
+
+// serve and album via local http server
+func AlbumHandler(w http.ResponseWriter, r *http.Request) {
+	title := r.URL.Path[len("/album/"):]
+	p, _ := LoadAlbum(title)
+	fmt.Fprintf(w, "<h1>%s</h1><div>%s</div>", p.Title, p.Body)
+}
+
+// test function of http server
+func Handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Test %s", r.URL.Path[1:])
+}
+
+
 func main() {
 	flagsInit()
 
@@ -227,4 +255,7 @@ func main() {
 
 	page := album.load(info, tagMap)
 	fmt.Println(page)
+
+	http.HandleFunc("/", Handler)
+	http.ListenAndServe(":8080", nil)
 }
